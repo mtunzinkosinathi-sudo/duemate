@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DueMate | Bondolfi Teachers College</title>
+<style>
+:root{
+ --blue:#1683d8;--blue2:#0b4f8a;--black:#080b10;--black2:#111720;
+ --grey:#8d9aaa;--light:#eef3f8;--white:#ffffff;--green:#19a974;
+ --red:#e05252;--border:#263241;--shadow:0 14px 40px rgba(0,0,0,.28)
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#080b10,#17212d 55%,#eef3f8 55%);color:#17212d;min-height:100vh}
+header{
+ background:linear-gradient(120deg,#05070a,#0d1722 55%,#0b4f8a);
+ color:white;padding:22px 6%;display:flex;justify-content:space-between;align-items:center;
+ gap:20px;border-bottom:1px solid #2c3948;box-shadow:0 8px 30px rgba(0,0,0,.35)
+}
+.logo{font-size:31px;font-weight:900;letter-spacing:.5px}.tag{color:#b9d9f3;margin-top:5px}
+nav button{background:transparent;color:white;border:1px solid #3d6d94;border-radius:9px;padding:10px 15px;margin-left:6px;cursor:pointer;font-weight:bold}
+nav button:hover{background:#1683d8;border-color:#1683d8}
+.container{max-width:1120px;margin:30px auto;padding:0 18px}
+.hero{
+ background:linear-gradient(135deg,#101721,#182635);color:white;border:1px solid #2a3948;
+ border-radius:20px;padding:30px;box-shadow:var(--shadow);margin-bottom:22px;position:relative;overflow:hidden
+}
+.hero:after{content:"";position:absolute;width:230px;height:230px;border-radius:50%;right:-80px;top:-90px;background:#1683d822}
+.hero h1{margin:0 0 8px;color:#5db5f2;font-size:34px}.hero p{margin:0;color:#d7e0e8}
+.grid{display:grid;grid-template-columns:1fr 1.5fr;gap:20px}
+.card{
+ background:rgba(255,255,255,.97);border:1px solid #d6dfe8;border-radius:18px;padding:22px;
+ box-shadow:var(--shadow)
+}
+.card h2{color:#111720}
+.form-row{margin-bottom:14px}label{display:block;font-weight:bold;margin-bottom:6px;color:#263241}
+input,select{
+ width:100%;padding:12px;border:1px solid #c8d2dc;border-radius:9px;font-size:15px;
+ background:#f8fafc;color:#111720;outline:none
+}
+input:focus,select:focus{border-color:#1683d8;box-shadow:0 0 0 3px #1683d81c}
+.btn{border:0;border-radius:9px;padding:12px 18px;cursor:pointer;font-weight:bold;transition:.2s}
+.primary{background:linear-gradient(135deg,#1683d8,#0b4f8a);color:white;box-shadow:0 7px 18px #0b4f8a33}
+.primary:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.secondary{background:#101720;color:white}.secondary:hover{background:#1683d8}
+.assignment{
+ border-left:6px solid #1683d8;background:linear-gradient(135deg,#f9fbfd,#eef3f7);
+ padding:17px;border-radius:12px;margin-bottom:12px;border-top:1px solid #dbe4ec
+}
+.assignment h3{margin:0 0 5px;color:#111720}.countdown{font-size:18px;font-weight:800;margin-top:10px;color:#0b65a9}
+.reminder{display:inline-block;margin-top:7px;padding:5px 10px;border-radius:999px;background:#dff0ff;color:#0b5b91;font-size:12px;font-weight:bold}
+.completed{border-left-color:var(--green);opacity:.78}.completed .countdown{color:var(--green)}
+.empty{text-align:center;color:#65727e;padding:25px}
+footer{text-align:center;padding:28px;color:#9eabb8;background:#080b10;margin-top:30px;border-top:1px solid #273341}
+#profileMsg{font-weight:bold}
+@media(max-width:800px){.grid{grid-template-columns:1fr}header{align-items:flex-start;flex-direction:column}nav button{margin:4px 4px 0 0}}
+</style>
+</head>
+<body>
+<header>
+  <div><div class="logo">🤖 DueMate</div><div class="tag">Your Smart Assignment Reminder</div></div>
+  <nav><button onclick="document.getElementById('profile').scrollIntoView()">Profile</button><button onclick="document.getElementById('add').scrollIntoView()">Add Assignment</button></nav>
+</header>
+
+<div class="container">
+<section class="hero">
+  <h1>Bondolfi Teachers College</h1>
+  <p>Never miss an assignment deadline again. Add your assignments and DueMate will keep track of the time remaining.</p>
+</section>
+
+<div class="grid">
+<section class="card" id="profile">
+  <h2>👤 Student Profile</h2>
+  <div class="form-row"><label>Surname</label><input id="surname" placeholder="Enter surname"></div>
+  <div class="form-row"><label>Name</label><input id="name" placeholder="Enter name"></div>
+  <div class="form-row"><label>Candidate Name / Number</label><input id="candidate" placeholder="Enter candidate name or number"></div>
+  <button class="btn primary" onclick="saveProfile()">Save Profile</button>
+  <p id="profileMsg"></p>
+</section>
+
+<section class="card" id="add">
+  <h2>➕ Add Assignment</h2>
+  <div class="form-row"><label>Assignment</label>
+    <select id="assignment"><option>Assignment 1</option><option>Assignment 2</option><option>Assignment 3</option></select>
+  </div>
+  <div class="form-row"><label>Subject</label>
+    <select id="subject"></select>
+  </div>
+  <div class="form-row"><label>Due Date</label><input id="date" type="date"></div>
+  <div class="form-row"><label>Due Time</label><input id="time" type="time"></div>
+  <button class="btn primary" onclick="addAssignment()">Add Assignment</button>
+</section>
+</div>
+
+<section class="card" style="margin-top:20px">
+<h2>📚 My Assignments</h2>
+<div style="margin-bottom:15px">
+  <button class="btn primary" onclick="enableNotifications()">🔔 Enable Reminders</button>
+  <button class="btn secondary" onclick="testReminder()">🔔 Test Reminder</button>
+  <button class="btn secondary" onclick="clearNotifications()">Clear Notification History</button>
+  <span id="notificationStatus" style="margin-left:8px;font-weight:bold"></span>
+</div>
+<div id="list"></div>
+</section>
+
+<section class="card" style="margin-top:20px">
+<h2>🔔 Notification History</h2>
+<div id="history"></div>
+</section>
+</div>
+<div id="toast" style="position:fixed;right:20px;bottom:20px;max-width:360px;display:none;z-index:9999;background:#101720;color:white;padding:16px 18px;border-radius:12px;box-shadow:0 14px 40px rgba(0,0,0,.35);border:1px solid #31506b">
+  <strong id="toastTitle"></strong><div id="toastMessage" style="margin-top:5px;color:#d7e0e8"></div>
+</div>
+<footer><strong style="color:#5db5f2">DueMate</strong> • Bondolfi Teachers College • <strong>Syntax Squad</strong><br><span style="font-size:13px">Smart assignment tracking • Live countdown • Timely reminders</span></footer>
+
+<script>
+const subjects=["Computer Science","Mathematics","Geography","Physics","Biology","Chemistry","Agriculture","Communication Skills","Psychology","Sociology","Health and Life Skills","Digital Technology in Education"];
+const sample=[
+["Assignment 1","Computer Science","2026-10-15","10:00"],
+["Assignment 2","Mathematics","2026-10-20","14:00"],
+["Assignment 3","Communication Skills","2026-10-28","23:59"],
+["Assignment 1","Physics","2026-11-03","09:00"],
+["Assignment 2","Biology","2026-11-10","15:00"]
+];
+
+const sub=document.getElementById("subject");
+subjects.forEach(s=>sub.add(new Option(s,s)));
+
+let assignments=JSON.parse(localStorage.getItem("duemate_assignments")||"null");
+if(!assignments){
+  assignments=sample.map((x,i)=>({id:Date.now()+i,title:x[0],subject:x[1],date:x[2],time:x[3],done:false,notified:{}}));
+  save();
+}
+assignments.forEach(a=>{if(!a.notified)a.notified={};});
+
+let history=JSON.parse(localStorage.getItem("duemate_notifications")||"[]");
+
+const profile=JSON.parse(localStorage.getItem("duemate_profile")||"{}");
+document.getElementById("surname").value=profile.surname||"";
+document.getElementById("name").value=profile.name||"";
+document.getElementById("candidate").value=profile.candidate||"";
+
+function save(){localStorage.setItem("duemate_assignments",JSON.stringify(assignments));}
+function saveHistory(){localStorage.setItem("duemate_notifications",JSON.stringify(history));}
+
+function saveProfile(){
+ const p={surname:document.getElementById("surname").value,name:document.getElementById("name").value,candidate:document.getElementById("candidate").value};
+ localStorage.setItem("duemate_profile",JSON.stringify(p));
+ document.getElementById("profileMsg").textContent="✓ Profile saved";
+ document.getElementById("profileMsg").style.color="#198754";
+}
+
+async function enableNotifications(){
+  const el=document.getElementById("notificationStatus");
+  localStorage.setItem("duemate_notifications_enabled","true");
+
+  // The Android/Chrome system notification API requires a supported secure context
+  // (normally HTTPS). A downloaded file/content:// page may not be allowed to request it.
+  if(!("Notification" in window)){
+    el.textContent="✓ In-site reminders enabled";
+    el.style.color="#19a974";
+    showToast("Reminders Enabled","Your reminders work inside DueMate. System notifications are not supported here.");
+    return;
+  }
+
+  try{
+    if(Notification.permission === "default"){
+      el.textContent="Asking for notification permission…";
+      el.style.color="#1683d8";
+      const permission=await Notification.requestPermission();
+      updateNotificationStatus(permission);
+      if(permission === "granted") {
+        notifyUser("🔔 DueMate Notifications Enabled","You will now receive assignment reminder notifications.");
+      } else if(permission === "denied") {
+        el.textContent="⚠ Browser notifications blocked";
+        el.style.color="#d9534f";
+        showToast("Notifications Blocked","Open DueMate from an HTTPS website and allow notifications in Chrome site settings.");
+      }
+    } else if(Notification.permission === "granted"){
+      updateNotificationStatus("granted");
+      notifyUser("🔔 DueMate Notifications Enabled","You will now receive assignment reminder notifications.");
+    } else {
+      updateNotificationStatus("denied");
+      showToast("Notifications Blocked","Chrome has blocked notifications for this page. Allow them in the site's notification settings.");
+    }
+  }catch(error){
+    el.textContent="✓ In-site reminders enabled";
+    el.style.color="#19a974";
+    showToast("In-site reminders enabled","System notifications require DueMate to be opened from a secure HTTPS website.");
+  }
+}
+
+function testReminder(){
+  localStorage.setItem("duemate_notifications_enabled","true");
+  notifyUser("🔔 DueMate Test Reminder","This is a test notification from DueMate.");
+  const el=document.getElementById("notificationStatus");
+  if("Notification" in window && Notification.permission === "granted"){
+    el.textContent="✓ System notification sent";
+    el.style.color="#19a974";
+  }else{
+    el.textContent="✓ In-site test shown";
+    el.style.color="#19a974";
+  }
+}
+
+function updateNotificationStatus(permission){
+  const el=document.getElementById("notificationStatus");
+  if(permission==="granted"){el.textContent="✓ Notifications enabled";el.style.color="#198754";}
+  else if(permission==="denied"){el.textContent="Notifications blocked";el.style.color="#d9534f";}
+  else {el.textContent="Notifications not enabled";el.style.color="#65727e";}
+}
+if(localStorage.getItem("duemate_notifications_enabled")==="true"){
+  const el=document.getElementById("notificationStatus");
+  el.textContent="✓ DueMate reminders enabled";
+  el.style.color="#19a974";
+}
+
+function addAssignment(){
+ const d=document.getElementById("date").value,t=document.getElementById("time").value;
+ if(!d||!t){alert("Please enter both the due date and time.");return;}
+ assignments.push({
+   id:Date.now(),title:document.getElementById("assignment").value,subject:sub.value,
+   date:d,time:t,done:false,notified:{}
+ });
+ save();render();
+ addHistory("Assignment added",`${document.getElementById("assignment").value} — ${sub.value} was added.`);
+}
+
+function toggleDone(id){
+ const a=assignments.find(x=>x.id===id);
+ a.done=!a.done;save();render();
+ addHistory(a.done?"Assignment completed":"Assignment marked pending",`${a.title} — ${a.subject}`);
+}
+
+function removeA(id){
+ const a=assignments.find(x=>x.id===id);
+ if(confirm("Delete this assignment?")){
+   assignments=assignments.filter(x=>x.id!==id);save();render();
+   addHistory("Assignment deleted",`${a.title} — ${a.subject}`);
+ }
+}
+
+function clearNotifications(){
+ if(confirm("Clear all notification history?")){
+   history=[];saveHistory();renderHistory();
+ }
+}
+
+function addHistory(title,message){
+ history.unshift({id:Date.now(),title,message,time:new Date().toLocaleString()});
+ history=history.slice(0,100);saveHistory();renderHistory();
+}
+
+function showToast(title,message){
+ const t=document.getElementById("toast");
+ document.getElementById("toastTitle").textContent=title;
+ document.getElementById("toastMessage").textContent=message;
+ t.style.display="block";
+ clearTimeout(window.duemateToastTimer);
+ window.duemateToastTimer=setTimeout(()=>t.style.display="none",9000);
+}
+function notifyUser(title,message){
+ addHistory(title,message);
+ showToast(title,message);
+ if("Notification" in window && Notification.permission === "granted"){
+   try{
+     const n=new Notification(title,{body:message,icon:"data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"192\" height=\"192\"><rect width=\"100%\" height=\"100%\" rx=\"35\" fill=\"%230b4f8a\"/><text x=\"50%\" y=\"58%\" text-anchor=\"middle\" font-size=\"90\">🤖</text></svg>"});
+     n.onclick=()=>{window.focus();n.close();};
+   }catch(e){
+     // Keep the in-site reminder visible if the system notification cannot be shown.
+   }
+ }
+}
+
+function reminder(ms){
+ const d=ms/86400000;
+ if(ms<=0)return "Deadline passed";
+ if(d<=1)return "🔴 Final day reminder";
+ if(d<=3)return "🟠 3-day reminder";
+ if(d<=7)return "🟡 7-day reminder";
+ return "🔵 Upcoming assignment";
+}
+
+function countdown(ms){
+ if(ms<=0)return "Deadline passed";
+ let s=Math.floor(ms/1000),days=Math.floor(s/86400);s%=86400;
+ let h=Math.floor(s/3600);s%=3600;
+ let m=Math.floor(s/60);let sec=s%60;
+ let parts=[];
+ if(days)parts.push(days+" day"+(days==1?"":"s"));
+ if(h||days)parts.push(h+" hour"+(h==1?"":"s"));
+ if(m||h||days)parts.push(m+" minute"+(m==1?"":"s"));
+ parts.push(sec+" seconds");
+ return parts.join(" • ");
+}
+
+function render(){
+ const el=document.getElementById("list");
+ if(!assignments.length){el.innerHTML='<div class="empty">No assignments yet. Add one above.</div>';return;}
+ assignments.sort((a,b)=>new Date(a.date+"T"+a.time)-new Date(b.date+"T"+b.time));
+ el.innerHTML=assignments.map(a=>{
+   const due=new Date(a.date+"T"+a.time).getTime(),ms=due-Date.now();
+   return `<div class="assignment ${a.done?'completed':''}">
+    <h3>${a.title} — ${a.subject}</h3>
+    <div>Due: <strong>${a.date}</strong> at <strong>${a.time}</strong></div>
+    <div class="countdown" data-id="${a.id}" data-due="${due}">${a.done?"✓ Completed":countdown(ms)}</div>
+    ${!a.done?`<span class="reminder" data-reminder="${a.id}">${reminder(ms)}</span>`:""}
+    <div style="margin-top:12px">
+      <button class="btn secondary" onclick="toggleDone(${a.id})">${a.done?"Mark Pending":"Mark Completed"}</button>
+      <button class="btn secondary" onclick="removeA(${a.id})">Delete</button>
+    </div>
+   </div>`;
+ }).join("");
+ renderHistory();
+}
+
+function renderHistory(){
+ const el=document.getElementById("history");
+ if(!history.length){el.innerHTML='<div class="empty">No notifications yet.</div>';return;}
+ el.innerHTML=history.map(h=>`
+   <div style="padding:12px;border-bottom:1px solid #e1e7ec">
+     <strong>${h.title}</strong><br>
+     <span>${h.message}</span><br>
+     <small style="color:#65727e">${h.time}</small>
+   </div>`).join("");
+}
+
+function checkReminders(){
+ const now=Date.now();
+ assignments.forEach(a=>{
+   if(a.done)return;
+   const due=new Date(a.date+"T"+a.time).getTime();
+   const ms=due-now;
+   const thresholds=[
+     ["7d",7*24*60*60*1000,"7 days remaining"],
+     ["3d",3*24*60*60*1000,"3 days remaining"],
+     ["1d",24*60*60*1000,"1 day remaining"],
+     ["1h",60*60*1000,"1 hour remaining"],
+     ["30m",30*60*1000,"30 minutes remaining"],
+     ["10m",10*60*1000,"10 minutes remaining"],
+     ["5m",5*60*1000,"5 minutes remaining"]
+   ];
+   thresholds.forEach(([key,threshold,label])=>{
+     // Fire when the deadline has crossed the threshold, but only once.
+     if(ms>0 && ms<=threshold && !a.notified[key]){
+       a.notified[key]=true;
+       notifyUser(`🔔 DueMate: ${label}`,`${a.title} — ${a.subject} is due on ${a.date} at ${a.time}.`);
+       save();
+     }
+   });
+ });
+}
+
+function tick(){
+ document.querySelectorAll(".countdown[data-due]").forEach(e=>{
+   const a=assignments.find(x=>String(x.id)===e.dataset.id);
+   if(a && !a.done)e.textContent=countdown(Number(e.dataset.due)-Date.now());
+ });
+ document.querySelectorAll(".reminder[data-reminder]").forEach(e=>{
+   const a=assignments.find(x=>String(x.id)===e.dataset.reminder);
+   if(a && !a.done){
+     const due=new Date(a.date+"T"+a.time).getTime();
+     e.textContent=reminder(due-Date.now());
+   }
+ });
+ checkReminders();
+}
+
+render();
+checkReminders();
+setInterval(tick,1000);
+</script>
+</body>
+</html>
